@@ -21,6 +21,13 @@ int get_vector_sum(std::vector<std::pair<int, int>> data) {
 }
 
 
+std::vector<std::pair<int, int>> get_sequence_as_pairs(std::vector<int> data) {
+    std::vector<std::pair<int, int>> sequence;
+    for (int i = 0; i < data.size(); ++i) {
+        sequence.emplace_back(i, data.at(i));
+    }
+    return sequence;
+}
 
 
 

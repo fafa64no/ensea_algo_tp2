@@ -8,6 +8,8 @@
 #include <list>
 #include <ostream>
 
+#include "vector_utils.h"
+
 
 std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data) {
     if (data.empty()) {
@@ -63,6 +65,31 @@ std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<
 }
 
 
+std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, const int k) {
+    if (data.empty()) {
+        return {};
+    }
+
+    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
+
+    int sequence_sum = get_vector_sum(data);
+    if (sequence_sum % k == 0) {
+        return sequence;
+    }
+
+    std::vector<std::pair<int, int>> subsequence;
+    for (int i = 0; i < data.size(); i++) {
+        auto subsequence_copy = data;
+        subsequence_copy.erase(subsequence_copy.begin() + i);
+        auto biggest_subsequence = get_biggest_div_subsequence(subsequence_copy, k);
+
+        if (biggest_subsequence.size() > subsequence.size()) {
+            subsequence = biggest_subsequence;
+        }
+    }
+
+    return subsequence;
+}
 
 
 
