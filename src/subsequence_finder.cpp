@@ -9,7 +9,7 @@
 #include <ostream>
 
 
-std::vector<std::pair<int, int>> get_biggest_subsequence(const std::vector<int>& data) {
+std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data) {
     if (data.empty()) {
         return {};
     }
@@ -61,6 +61,7 @@ std::vector<std::pair<int, int>> get_biggest_subsequence(const std::vector<int>&
 
     return biggest_subsequence;
 }
+
 
 
 

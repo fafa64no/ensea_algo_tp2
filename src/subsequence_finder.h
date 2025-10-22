@@ -7,6 +7,6 @@
 
 #include <vector>
 
-std::vector<std::pair<int, int>> get_biggest_subsequence(const std::vector<int>& data);
+std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data);
 
 #endif //ENSEA_ALGO_TP2_SUBSEQUENCE_FINDER_H
