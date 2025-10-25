@@ -1,6 +1,9 @@
 #include "file_io.h"
 #include "magic_numbers.h"
-#include "subsequence_finder.h"
+#include "exercise_1.h"
+#include "exercise_2.h"
+#include "exercise_3.h"
+#include "exercise_4.h"
 
 int main() {
     {
