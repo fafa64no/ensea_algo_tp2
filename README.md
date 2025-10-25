@@ -9,6 +9,11 @@ This project was compiled with C++ 23 and CLion on linux.
 It uses [CMakeLists.txt](CMakeLists.txt), and depending on how you compile it, you might need to change
 the paths in [magic_numbers.h](src/magic_numbers.h).
 
+## Changing between adjacency matrix and adjacency list
+
+The method used for implementation is defined in 
+[algo_utils.h](src/utlis/algo_utils.h).
+
 ## Questions
 
 Regarding question 5.4:
