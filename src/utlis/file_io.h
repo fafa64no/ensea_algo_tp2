@@ -10,6 +10,7 @@
 
 std::string read_file(const std::string& file_path);
 std::vector<int> read_sequence(const std::string& file_path);
+std::vector<std::pair<int, int>> read_tree(const std::string& file_path);
 
 void store_sequence(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence);
 

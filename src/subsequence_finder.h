@@ -9,5 +9,8 @@
 
 std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data);
 std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, int k);
+std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, int k, int current_sum);
+
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree);
 
 #endif //ENSEA_ALGO_TP2_SUBSEQUENCE_FINDER_H

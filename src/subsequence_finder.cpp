@@ -4,9 +4,10 @@
 
 #include "subsequence_finder.h"
 
-#include <iostream>
 #include <list>
-#include <ostream>
+#include <queue>
+#include <ranges>
+#include <unordered_map>
 
 #include "vector_utils.h"
 
@@ -66,16 +67,50 @@ std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<
 
 
 std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, const int k) {
+    // New algo to try
+    // - get nb of occurrence of each value
+    // - get total sum
+    // - read from occurrences list what you can remove to get dividable sum
+
     if (data.empty()) {
         return {};
     }
 
-    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
-
     int sequence_sum = get_vector_sum(data);
     if (sequence_sum % k == 0) {
-        return sequence;
+        return get_sequence_as_pairs(data);
     }
+
+    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
+
+    std::vector<std::pair<int, int>> subsequence;
+    for (int i = 0; i < data.size(); i++) {
+        auto subsequence_copy = data;
+        subsequence_copy.erase(subsequence_copy.begin() + i);
+        auto biggest_subsequence = get_biggest_div_subsequence(
+            subsequence_copy,
+            k,
+            sequence_sum - data[i]
+        );
+
+        if (biggest_subsequence.size() > subsequence.size()) {
+            subsequence = biggest_subsequence;
+        }
+    }
+
+    return subsequence;
+}
+
+std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, const int k, const int current_sum) {
+    if (data.empty()) {
+        return {};
+    }
+
+    if (current_sum % k == 0) {
+        return get_sequence_as_pairs(data);
+    }
+
+    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
 
     std::vector<std::pair<int, int>> subsequence;
     for (int i = 0; i < data.size(); i++) {
@@ -92,7 +127,65 @@ std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<i
 }
 
 
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree) {
+    // Uses the "Breadth-First Search" algorithm
+    if (tree.empty()) {
+        return {};
+    }
 
+    std::unordered_map<int,int> id_to_vert;
+    std::vector<int> vert_to_id;
+
+    id_to_vert.reserve(tree.size() * 2);
+    for (const auto & [fst, snd] : tree) {
+        int a = fst, b = snd;
+        if (!id_to_vert.contains(a)) {
+            id_to_vert[a] = static_cast<int>(vert_to_id.size());
+            vert_to_id.push_back(a);
+        }
+        if (!id_to_vert.contains(b)) {
+            id_to_vert[b] = static_cast<int>(vert_to_id.size());
+            vert_to_id.push_back(b);
+        }
+    }
+    const int n = static_cast<int>(vert_to_id.size());
+
+    std::vector<std::vector<int>> adjacency_list(n);
+    adjacency_list.assign(n, {});
+    for (const auto & [fst, snd] : tree) {
+        const int u = id_to_vert.at(fst);
+        const int v = id_to_vert.at(snd);
+        adjacency_list[u].push_back(v);
+        adjacency_list[v].push_back(u);
+    }
+
+    std::vector<char> visited(n, 0x0);
+    std::queue<int> queue;
+    std::vector<std::pair<int,int>> tree_edges;
+
+    constexpr int start = 0;
+    visited[start] = 1;
+    queue.push(start);
+
+    while (!queue.empty()) {
+        const int u = queue.front();
+        queue.pop();
+        for (const int v : adjacency_list[u]) {
+            if (visited[v]) {
+                continue;
+            }
+            visited[v] = 1;
+            queue.push(v);
+            tree_edges.emplace_back(vert_to_id[u], vert_to_id[v]);
+            if (static_cast<int>(tree_edges.size()) == n - 1) {
+                // Early stop
+                return tree_edges;
+            }
+        }
+    }
+
+    return tree_edges;
+}
 
 
 
