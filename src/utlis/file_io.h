@@ -13,6 +13,7 @@ std::vector<int> read_sequence(const std::string& file_path);
 std::vector<std::pair<int, int>> read_tree(const std::string& file_path);
 
 void store_sequence(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence);
+void store_sequence_with_sum(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence);
 void store_graph(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence);
 void store_connected_components(const std::string& file_path, const std::vector<std::vector<int>>& components);
 

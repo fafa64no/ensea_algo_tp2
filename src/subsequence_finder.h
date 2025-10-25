@@ -13,7 +13,6 @@
 
 std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data);
 std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, int k);
-std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, int k, int current_sum);
 
 void get_vertex_occurrences(
     const std::vector<std::pair<int, int>>& graph,

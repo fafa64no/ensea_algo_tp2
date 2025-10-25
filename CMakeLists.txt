@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 23)
 add_executable(ensea_algo_tp2 main.cpp
         src/subsequence_finder.cpp
         src/utlis/file_io.cpp
-        src/utlis/vector_utils.cpp
 )
 
 target_include_directories(ensea_algo_tp2 PRIVATE

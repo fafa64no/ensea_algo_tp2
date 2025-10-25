@@ -5,12 +5,11 @@
 #include "subsequence_finder.h"
 
 #include <iostream>
+#include <climits>
 #include <list>
 #include <ostream>
 #include <queue>
 #include <ranges>
-
-#include "vector_utils.h"
 
 
 std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<int>& data) {
@@ -68,63 +67,66 @@ std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<
 
 
 std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, const int k) {
-    // New algo to try
-    // - get nb of occurrence of each value
-    // - get total sum
-    // - read from occurrences list what you can remove to get dividable sum
-
-    if (data.empty()) {
+    if (data.empty() || k <= 0) {
         return {};
     }
 
-    int sequence_sum = get_vector_sum(data);
-    if (sequence_sum % k == 0) {
-        return get_sequence_as_pairs(data);
+    const int n = static_cast<int>(data.size());
+    // depth[i][r] = maximum number of elements we can pick from first i elements such that sum % k == r
+    // taken[i][r] = whether the optimal depth[i][r] was obtained by taking element i-1
+    // prev_rem[i][r] = previous remainder in the transition to (i, r)
+    std::vector<std::vector<int>> depth(n+1, std::vector<int>(k, INT_MIN));
+    std::vector<std::vector<char>> taken(n+1, std::vector<char>(k, 0));
+    std::vector<std::vector<int>> prev_rem(n+1, std::vector<int>(k, -1));
+
+    depth[0][0] = 0;
+    for (int r = 1; r < k; r++) {
+        depth[0][r] = INT_MIN;
     }
 
-    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
+    for (int i = 0; i < n; i++) {
+        for (int r = 0; r < k; ++r) {
+            depth[i+1][r] = depth[i][r];
+            taken[i+1][r] = 0;
+            prev_rem[i+1][r] = r;
+        }
 
-    std::vector<std::pair<int, int>> subsequence;
-    for (int i = 0; i < data.size(); i++) {
-        auto subsequence_copy = data;
-        subsequence_copy.erase(subsequence_copy.begin() + i);
-        auto biggest_subsequence = get_biggest_div_subsequence(
-            subsequence_copy,
-            k,
-            sequence_sum - data[i]
-        );
-
-        if (biggest_subsequence.size() > subsequence.size()) {
-            subsequence = biggest_subsequence;
+        const int add = (data[i] + k) % k;
+        for (int r = 0; r < k; ++r) {
+            if (depth[i][r] == INT_MIN) {
+                continue;
+            }
+            const int newr = (r + add) % k;
+            const int cand = depth[i][r] + 1;
+            if (cand > depth[i+1][newr]) {
+                depth[i+1][newr] = cand;
+                taken[i+1][newr] = 1;
+                prev_rem[i+1][newr] = r;
+            }
         }
     }
 
-    return subsequence;
-}
-
-std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<int>& data, const int k, const int current_sum) {
-    if (data.empty()) {
+    if (depth[n][0] <= 0) {
         return {};
     }
 
-    if (current_sum % k == 0) {
-        return get_sequence_as_pairs(data);
-    }
-
-    std::vector<std::pair<int, int>> sequence = get_sequence_as_pairs(data);
-
-    std::vector<std::pair<int, int>> subsequence;
-    for (int i = 0; i < data.size(); i++) {
-        auto subsequence_copy = data;
-        subsequence_copy.erase(subsequence_copy.begin() + i);
-        auto biggest_subsequence = get_biggest_div_subsequence(subsequence_copy, k);
-
-        if (biggest_subsequence.size() > subsequence.size()) {
-            subsequence = biggest_subsequence;
+    std::vector<std::pair<int,int>> result; result.reserve(depth[n][0]);
+    int i = n;
+    int rem = 0;
+    while (i > 0) {
+        if (taken[i][rem]) {
+            result.emplace_back(i, data[i-1]);
+            const int prev = prev_rem[i][rem];
+            rem = prev;
+            i = i - 1;
+        } else {
+            const int prev = prev_rem[i][rem];
+            rem = prev;
+            i = i - 1;
         }
     }
 
-    return subsequence;
+    return result;
 }
 
 
@@ -333,7 +335,7 @@ std::vector<std::vector<int>> get_connected_components(const std::vector<std::pa
     std::vector<std::vector<int>> components;
     components.reserve(n);
 
-    for (int s = 0; s < n; ++s) {
+    for (int s = 0; s < n; s++) {
         if (visited[s]) continue;
         std::vector<int> comp;
         std::queue<int> q;
@@ -343,7 +345,7 @@ std::vector<std::vector<int>> get_connected_components(const std::vector<std::pa
             const int u = q.front();
             q.pop();
             comp.push_back(vert_to_id[u]);
-            for (int v = 0; v < n; ++v) {
+            for (int v = 0; v < n; v++) {
                 if (visited[v] || adjacency_matrix[u][v] == 0) {
                     continue;
                 }

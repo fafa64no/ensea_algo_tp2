@@ -93,6 +93,20 @@ void store_sequence(const std::string& file_path, const std::vector<std::pair<in
     file_handle.close();
 }
 
+void store_sequence_with_sum(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence) {
+    std::ofstream file_handle(file_path);
+
+    int sum = 0;
+    file_handle << "Sequence has length: " << sequence.size() << std::endl;
+    for (const auto&[fst, snd] : sequence) {
+        file_handle << "a[" << fst << "] = " << snd << std::endl;
+        sum += snd;
+    }
+    file_handle << "Sequence has sum: " << sum << std::endl;
+
+    file_handle.close();
+}
+
 void store_graph(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence) {
     std::ofstream file_handle(file_path);
 
@@ -107,7 +121,7 @@ void store_connected_components(const std::string& file_path, const std::vector<
     std::ofstream file_handle(file_path);
 
     file_handle << components.size() << " connex components" << std::endl;
-    for (int i=0; i<components.size(); ++i) {
+    for (int i=0; i<components.size(); i++) {
         const auto& component = components.at(i);
         file_handle << "Component " << i+1 << ":" << std::endl;
         for (const auto& v : component) {
