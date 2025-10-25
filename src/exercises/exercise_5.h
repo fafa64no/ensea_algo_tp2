@@ -8,7 +8,7 @@
 #include <vector>
 
 std::pair<int, std::vector<int>> get_shortest_path(
-    const std::vector<std::pair<int, int>>& edges,
+    const std::vector<std::pair<int, int>>& graph,
     const std::vector<int>& weights,
     int start_label,
     int finish_label

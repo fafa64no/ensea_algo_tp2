@@ -33,6 +33,19 @@ int main() {
     }
 
     {
+        const std::vector<std::pair<int, int>> graph = {
+            {1, 2},
+            {1, 6},
+            {2, 3},
+            {3, 4},
+            {3, 6},
+            {5, 4},
+            {6, 5},
+        };
+        const std::vector<int> wieghts = {
+            1, 20, 2, 20, 3, 5, 4
+        };
+        const auto [path_length, path] = get_shortest_path(graph, wieghts, 1, 4);
         /// TODO:
         /// - read data
         /// - apply algorithm
