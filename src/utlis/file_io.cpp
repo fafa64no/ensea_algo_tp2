@@ -80,6 +80,48 @@ std::vector<std::pair<int, int>> read_tree(const std::string& file_path) {
     return tree;
 }
 
+void read_weighted_tree(const std::string& file_path, std::vector<std::pair<int, int>>& tree, std::vector<int>& weights) {
+    const auto file_contents = read_file(file_path);
+
+    int last_value = 0;
+    bool reading = false;
+    int value_being_read = 0;
+    std::pair<int, int> last;
+    for (const auto& c : file_contents) {
+        if (c >= '0' && c <= '9') {
+            last_value *= 10;
+            last_value += c - '0';
+            reading = true;
+        } else {
+            switch (value_being_read) {
+                case 0: {
+                    last.first = last_value;
+                    value_being_read = 1;
+                    break;
+                }
+                case 1: {
+                    last.second = last_value;
+                    value_being_read = 2;
+                    break;
+                }
+                default: {
+                    tree.emplace_back(last);
+                    weights.emplace_back(last_value);
+                    value_being_read = 0;
+                    break;
+                }
+            }
+            last_value = 0;
+            reading = false;
+        }
+    }
+
+    if (reading && value_being_read == 2) {
+        tree.emplace_back(last);
+        weights.emplace_back(last_value);
+    }
+}
+
 
 void store_sequence(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence) {
     std::ofstream file_handle(file_path);
@@ -132,6 +174,23 @@ void store_connected_components(const std::string& file_path, const std::vector<
     file_handle.close();
 }
 
+void store_path(const std::string& file_path, const int path_length, const std::vector<int>& path) {
+    std::ofstream file_handle(file_path);
+
+    file_handle << "Shortest path has length: " << path_length << std::endl;
+    bool first_element = true;
+    for (const auto& vertex : path) {
+        if (first_element) {
+            first_element = false;
+            file_handle << vertex;
+        } else {
+            file_handle << " -> " << vertex;
+        }
+    }
+    file_handle << std::endl;
+
+    file_handle.close();
+}
 
 
 
