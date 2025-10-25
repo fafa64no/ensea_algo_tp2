@@ -240,7 +240,81 @@ std::pair<int, std::vector<int>> get_shortest_path(
 #endif
 
 
+std::vector<std::pair<int, std::vector<int>>> get_all_shortest_paths(
+    const std::vector<std::pair<int, int>>& graph,
+    const std::vector<int>& weights,
+    const int start_label
+) {
+    if (graph.empty()) {
+        return {};
+    }
 
+    std::unordered_map<int,int> id_to_idx;
+    std::vector<int> idx_to_id;
+    build_label_maps_from_edges(graph, id_to_idx, idx_to_id);
+    const int n = static_cast<int>(idx_to_id.size());
+    std::vector<std::pair<int, std::vector<int>>> result(
+        n,
+        {INT_MAX, {}}
+    );
+
+    if (!id_to_idx.contains(start_label)) {
+        return result;
+    }
+    const int s = id_to_idx.at(start_label);
+
+    std::vector mat(n, std::vector(n, INT_MAX));
+    for (int i = 0; i < n; i++) {
+        mat[i][i] = 0;
+    }
+    for (size_t i = 0; i < graph.size(); i++) {
+        const int u = id_to_idx[graph[i].first];
+        const int v = id_to_idx[graph[i].second];
+        const int w = weights[i];
+        mat[u][v] = std::min(mat[u][v], w);
+        mat[v][u] = mat[u][v];
+    }
+
+    std::vector dist(n, INT_MAX);
+    std::vector prev(n, -1);
+    std::vector<char> used(n, 0);
+    dist[s] = 0;
+    for (int it = 0; it < n; it++) {
+        int u = -1;
+        int best = INT_MAX;
+        for (int i = 0; i < n; ++i) {
+            if (!used[i] && dist[i] < best) {
+                best = dist[i]; u = i;
+            }
+        }
+        if (u == -1) {
+            break;
+        }
+        used[u] = 1;
+        for (int v = 0; v < n; v++) {
+            if (mat[u][v] < INT_MAX && !used[v]) {
+                const int nd = dist[u] + mat[u][v];
+                if (nd < dist[v]) {
+                    dist[v] = nd; prev[v] = u;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (dist[i] >= INT_MAX) {
+            result[i] = {-1, {}}; continue;
+        }
+        std::vector<int> path;
+        for (int cur = i; cur != -1; cur = prev[cur]) {
+            path.push_back(idx_to_id[cur]);
+        }
+        std::reverse(path.begin(), path.end());
+        result[i] = {dist[i], path};
+    }
+
+    return result;
+}
 
 
 
