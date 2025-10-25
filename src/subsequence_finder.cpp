@@ -127,6 +127,7 @@ std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<i
 }
 
 
+#ifdef ADJACENCY_LIST_METHOD
 std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree) {
     // Uses the "Breadth-First Search" algorithm
     if (tree.empty()) {
@@ -178,7 +179,6 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
             queue.push(v);
             tree_edges.emplace_back(vert_to_id[u], vert_to_id[v]);
             if (static_cast<int>(tree_edges.size()) == n - 1) {
-                // Early stop
                 return tree_edges;
             }
         }
@@ -186,9 +186,66 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
 
     return tree_edges;
 }
+#else
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree) {
+    // Uses the "Breadth-First Search" algorithm
+    if (tree.empty()) {
+        return {};
+    }
 
+    std::unordered_map<int,int> id_to_vert;
+    std::vector<int> vert_to_id;
 
+    id_to_vert.reserve(tree.size() * 2);
+    for (const auto & [fst, snd] : tree) {
+        int a = fst, b = snd;
+        if (!id_to_vert.contains(a)) {
+            id_to_vert[a] = static_cast<int>(vert_to_id.size());
+            vert_to_id.push_back(a);
+        }
+        if (!id_to_vert.contains(b)) {
+            id_to_vert[b] = static_cast<int>(vert_to_id.size());
+            vert_to_id.push_back(b);
+        }
+    }
+    const int n = static_cast<int>(vert_to_id.size());
 
+    std::vector<std::vector<int>> adjacency_matrix(n, std::vector<int>(n, 0));
+    for (const auto & [fst, snd] : tree) {
+        const int u = id_to_vert.at(fst);
+        const int v = id_to_vert.at(snd);
+        adjacency_matrix[u][v] += 1;
+        adjacency_matrix[v][u] += 1;
+    }
+
+    std::vector<char> visited(n, 0x0);
+    std::queue<int> queue;
+    std::vector<std::pair<int,int>> tree_edges;
+    tree_edges.reserve(std::max(0, n-1));
+
+    constexpr int start = 0;
+    visited[start] = 1;
+    queue.push(start);
+
+    while (!queue.empty() && static_cast<int>(tree_edges.size()) < n-1) {
+        const int u = queue.front();
+        queue.pop();
+        for (int v=0; v < n; v++) {
+            if (visited[v] || adjacency_matrix[u][v] == 0) {
+                continue;
+            }
+            visited[v] = 1;
+            queue.push(v);
+            tree_edges.emplace_back(vert_to_id[u], vert_to_id[v]);
+            if (static_cast<int>(tree_edges.size()) == n - 1) {
+                break;
+            }
+        }
+    }
+
+    return tree_edges;
+}
+#endif
 
 
 
