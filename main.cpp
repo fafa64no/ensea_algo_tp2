@@ -21,11 +21,13 @@ int main() {
     {
         const auto data = read_tree(DEFAULT_ARB_INPUT_PATH);
         const auto covering_tree = get_covering_tree(data);
-        store_sequence(DEFAULT_ARB_OUTPUT_PATH, covering_tree);
+        store_graph(DEFAULT_ARB_OUTPUT_PATH, covering_tree);
     }
 
     {
-        const auto data = read_tree(DEFAULT_CON_OUTPUT_PATH);
+        const auto data = read_tree(DEFAULT_CON_INPUT_PATH);
+        const auto covering_tree = get_connected_components(data);
+        store_connected_components(DEFAULT_CON_OUTPUT_PATH, covering_tree);
     }
 
     {

@@ -93,6 +93,32 @@ void store_sequence(const std::string& file_path, const std::vector<std::pair<in
     file_handle.close();
 }
 
+void store_graph(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence) {
+    std::ofstream file_handle(file_path);
+
+    for (const auto&[fst, snd] : sequence) {
+        file_handle << fst << " " << snd << std::endl;
+    }
+
+    file_handle.close();
+}
+
+void store_connected_components(const std::string& file_path, const std::vector<std::vector<int>>& components) {
+    std::ofstream file_handle(file_path);
+
+    file_handle << components.size() << " connex components" << std::endl;
+    for (int i=0; i<components.size(); ++i) {
+        const auto& component = components.at(i);
+        file_handle << "Component " << i+1 << ":" << std::endl;
+        for (const auto& v : component) {
+            file_handle << v << " ";
+        }
+        file_handle << std::endl;
+    }
+
+    file_handle.close();
+}
+
 
 
 

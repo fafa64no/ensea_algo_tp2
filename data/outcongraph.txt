@@ -1,0 +1,5 @@
+2 connex components
+Component 1:
+5 4 3 
+Component 2:
+1 2 

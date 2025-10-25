@@ -4,10 +4,11 @@
 
 #include "subsequence_finder.h"
 
+#include <iostream>
 #include <list>
+#include <ostream>
 #include <queue>
 #include <ranges>
-#include <unordered_map>
 
 #include "vector_utils.h"
 
@@ -127,18 +128,17 @@ std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<i
 }
 
 
-#ifdef ADJACENCY_LIST_METHOD
-std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree) {
-    // Uses the "Breadth-First Search" algorithm
-    if (tree.empty()) {
-        return {};
+void get_vertex_occurrences(
+    const std::vector<std::pair<int, int>>& graph,
+    std::unordered_map<int,int>& id_to_vert,
+    std::vector<int>& vert_to_id
+) {
+    if (graph.empty()) {
+        return;
     }
 
-    std::unordered_map<int,int> id_to_vert;
-    std::vector<int> vert_to_id;
-
-    id_to_vert.reserve(tree.size() * 2);
-    for (const auto & [fst, snd] : tree) {
+    id_to_vert.reserve(graph.size() * 2);
+    for (const auto & [fst, snd] : graph) {
         int a = fst, b = snd;
         if (!id_to_vert.contains(a)) {
             id_to_vert[a] = static_cast<int>(vert_to_id.size());
@@ -149,16 +149,54 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
             vert_to_id.push_back(b);
         }
     }
-    const int n = static_cast<int>(vert_to_id.size());
+}
 
+std::vector<std::vector<int>> get_adjacency_list(
+    const std::vector<std::pair<int, int>>& graph,
+    const std::unordered_map<int,int>& id_to_vert,
+    const std::vector<int>& vert_to_id
+) {
+    const int n = static_cast<int>(vert_to_id.size());
     std::vector<std::vector<int>> adjacency_list(n);
     adjacency_list.assign(n, {});
-    for (const auto & [fst, snd] : tree) {
+    for (const auto & [fst, snd] : graph) {
         const int u = id_to_vert.at(fst);
         const int v = id_to_vert.at(snd);
         adjacency_list[u].push_back(v);
         adjacency_list[v].push_back(u);
     }
+    return adjacency_list;
+}
+
+std::vector<std::vector<int>> get_adjacency_matrix(
+    const std::vector<std::pair<int, int>>& graph,
+    const std::unordered_map<int,int>& id_to_vert,
+    const std::vector<int>& vert_to_id
+) {
+    const int n = static_cast<int>(vert_to_id.size());
+    std::vector<std::vector<int>> adjacency_matrix(n, std::vector<int>(n, 0));
+    for (const auto & [fst, snd] : graph) {
+        const int u = id_to_vert.at(fst);
+        const int v = id_to_vert.at(snd);
+        adjacency_matrix[u][v] += 1;
+        adjacency_matrix[v][u] += 1;
+    }
+    return adjacency_matrix;
+}
+
+
+#ifdef ADJACENCY_LIST_METHOD
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& graph) {
+    if (graph.empty()) {
+        return {};
+    }
+
+    std::unordered_map<int,int> id_to_vert;
+    std::vector<int> vert_to_id;
+    get_vertex_occurrences(graph, id_to_vert, vert_to_id);
+    const int n = static_cast<int>(vert_to_id.size());
+
+    const std::vector<std::vector<int>> adjacency_list = get_adjacency_list(graph, id_to_vert, vert_to_id);
 
     std::vector<char> visited(n, 0x0);
     std::queue<int> queue;
@@ -186,37 +224,18 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
 
     return tree_edges;
 }
-#else
-std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& tree) {
-    // Uses the "Breadth-First Search" algorithm
-    if (tree.empty()) {
+#elifdef ADJACENCY_MATRIX_METHOD
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>& graph) {
+    if (graph.empty()) {
         return {};
     }
 
     std::unordered_map<int,int> id_to_vert;
     std::vector<int> vert_to_id;
-
-    id_to_vert.reserve(tree.size() * 2);
-    for (const auto & [fst, snd] : tree) {
-        int a = fst, b = snd;
-        if (!id_to_vert.contains(a)) {
-            id_to_vert[a] = static_cast<int>(vert_to_id.size());
-            vert_to_id.push_back(a);
-        }
-        if (!id_to_vert.contains(b)) {
-            id_to_vert[b] = static_cast<int>(vert_to_id.size());
-            vert_to_id.push_back(b);
-        }
-    }
+    get_vertex_occurrences(graph, id_to_vert, vert_to_id);
     const int n = static_cast<int>(vert_to_id.size());
 
-    std::vector<std::vector<int>> adjacency_matrix(n, std::vector<int>(n, 0));
-    for (const auto & [fst, snd] : tree) {
-        const int u = id_to_vert.at(fst);
-        const int v = id_to_vert.at(snd);
-        adjacency_matrix[u][v] += 1;
-        adjacency_matrix[v][u] += 1;
-    }
+    const std::vector<std::vector<int>> adjacency_matrix = get_adjacency_matrix(graph, id_to_vert, vert_to_id);
 
     std::vector<char> visited(n, 0x0);
     std::queue<int> queue;
@@ -245,8 +264,104 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
 
     return tree_edges;
 }
+#else
+std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>&) {
+    std::cerr << "get_covering_tree has no implementation, please uncomment the corresponding #defines in subsequence_finder.h" << std::endl;
+    return {};
+}
 #endif
 
+#ifdef ADJACENCY_LIST_METHOD
+std::vector<std::vector<int>> get_connected_components(const std::vector<std::pair<int, int>>& graph) {
+    if (graph.empty()) {
+        return {};
+    }
+
+    std::unordered_map<int,int> id_to_vert;
+    std::vector<int> vert_to_id;
+    get_vertex_occurrences(graph, id_to_vert, vert_to_id);
+    int n = static_cast<int>(vert_to_id.size());
+
+    const std::vector<std::vector<int>> adjacency_list = get_adjacency_list(graph, id_to_vert, vert_to_id);
+
+    std::vector<char> visited(n, 0);
+    std::vector<std::vector<int>> components;
+    components.reserve(n);
+
+    for (int s = 0; s < n; ++s) {
+        if (visited[s]) {
+            continue;
+        }
+
+        std::vector<int> comp;
+        std::queue<int> q;
+        visited[s] = 1;
+        q.push(s);
+
+        while (!q.empty()) {
+            const int u = q.front();
+            q.pop();
+            comp.push_back(vert_to_id[u]);
+
+            for (int v : adjacency_list[u]) {
+                if (visited[v]) {
+                    continue;
+                }
+                visited[v] = 1;
+                q.push(v);
+            }
+        }
+        components.push_back(std::move(comp));
+    }
+
+    return components;
+}
+#elifdef ADJACENCY_MATRIX_METHOD
+std::vector<std::vector<int>> get_connected_components(const std::vector<std::pair<int, int>>& graph) {
+    if (graph.empty()) {
+        return {};
+    }
+
+    std::unordered_map<int,int> id_to_vert;
+    std::vector<int> vert_to_id;
+    get_vertex_occurrences(graph, id_to_vert, vert_to_id);
+    int n = static_cast<int>(vert_to_id.size());
+
+    const std::vector<std::vector<int>> adjacency_matrix = get_adjacency_matrix(graph, id_to_vert, vert_to_id);
+
+    std::vector<char> visited(n, 0);
+    std::vector<std::vector<int>> components;
+    components.reserve(n);
+
+    for (int s = 0; s < n; ++s) {
+        if (visited[s]) continue;
+        std::vector<int> comp;
+        std::queue<int> q;
+        visited[s] = 1;
+        q.push(s);
+        while (!q.empty()) {
+            const int u = q.front();
+            q.pop();
+            comp.push_back(vert_to_id[u]);
+            for (int v = 0; v < n; ++v) {
+                if (visited[v] || adjacency_matrix[u][v] == 0) {
+                    continue;
+                }
+                visited[v] = 1;
+                q.push(v);
+            }
+        }
+        components.push_back(std::move(comp));
+    }
+
+    return components;
+}
+#else
+std::vector<std::vector<int>> get_connected_components(const std::vector<std::pair<int, int>>&) {
+    std::cerr << "get_connected_components has no implementation, please uncomment the corresponding #defines in subsequence_finder.h" << std::endl;
+    return {};
+}
+#endif
 
 
 
