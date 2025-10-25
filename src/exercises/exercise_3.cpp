@@ -91,7 +91,7 @@ std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<i
 }
 #else
 std::vector<std::pair<int, int>> get_covering_tree(const std::vector<std::pair<int, int>>&) {
-    std::cerr << "get_covering_tree has no implementation, please uncomment the corresponding #defines in subsequence_finder.h" << std::endl;
+    std::cerr << "get_covering_tree has no implementation, please uncomment the corresponding #defines in algo_utils.h" << std::endl;
     return {};
 }
 #endif

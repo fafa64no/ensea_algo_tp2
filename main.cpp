@@ -4,6 +4,8 @@
 #include "exercise_2.h"
 #include "exercise_3.h"
 #include "exercise_4.h"
+#include "exercise_5.h"
+
 
 int main() {
     {
@@ -31,7 +33,10 @@ int main() {
     }
 
     {
-        const auto data = read_tree(DEFAULT_DIJ_OUTPUT_PATH);
+        /// TODO:
+        /// - read data
+        /// - apply algorithm
+        /// - store data
     }
 
     return EXIT_SUCCESS;

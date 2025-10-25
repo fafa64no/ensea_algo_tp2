@@ -97,7 +97,7 @@ std::vector<std::vector<int>> get_connected_components(const std::vector<std::pa
 }
 #else
 std::vector<std::vector<int>> get_connected_components(const std::vector<std::pair<int, int>>&) {
-    std::cerr << "get_connected_components has no implementation, please uncomment the corresponding #defines in subsequence_finder.h" << std::endl;
+    std::cerr << "get_connected_components has no implementation, please uncomment the corresponding #defines in algo_utils.h" << std::endl;
     return {};
 }
 #endif
