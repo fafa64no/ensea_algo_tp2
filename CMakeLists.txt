@@ -11,6 +11,7 @@ add_executable(ensea_algo_tp2 main.cpp
         src/exercises/exercise_3.cpp
         src/exercises/exercise_4.cpp
         src/exercises/exercise_5.cpp
+        src/utlis/MinHeap.cpp
 )
 
 target_include_directories(ensea_algo_tp2 PRIVATE

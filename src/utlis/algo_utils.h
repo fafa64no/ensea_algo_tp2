@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
+#define DISTANCE_HEAP_METHOD    // Comment this to disable heap method
 #define ADJACENCY_LIST_METHOD   // Comment this to disable adjacency list method
 #define ADJACENCY_MATRIX_METHOD // Comment this to disable adjacency matrix method
 
