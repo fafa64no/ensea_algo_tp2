@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <sstream>
-#include <pstl/execution_defs.h>
 
 
 std::string read_file(const std::string& file_path) {

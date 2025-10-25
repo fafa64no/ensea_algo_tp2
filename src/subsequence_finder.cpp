@@ -23,7 +23,7 @@ std::vector<std::pair<int, int>> get_biggest_mono_subsequence(const std::vector<
 
     for (int i = 0; i < data.size(); i++) {
         bool has_max_increased{false};
-        std::list<std::vector<std::pair<int, int>>> new_subsequences;;
+        std::list<std::vector<std::pair<int, int>>> new_subsequences;
         for (auto& subsequence : available_subsequences) {
             if (subsequence.back().second + 1 == data[i]) {
                 std::pair element(i, data[i]);
@@ -75,9 +75,9 @@ std::vector<std::pair<int, int>> get_biggest_div_subsequence(const std::vector<i
     // depth[i][r] = maximum number of elements we can pick from first i elements such that sum % k == r
     // taken[i][r] = whether the optimal depth[i][r] was obtained by taking element i-1
     // prev_rem[i][r] = previous remainder in the transition to (i, r)
-    std::vector<std::vector<int>> depth(n+1, std::vector<int>(k, INT_MIN));
-    std::vector<std::vector<char>> taken(n+1, std::vector<char>(k, 0));
-    std::vector<std::vector<int>> prev_rem(n+1, std::vector<int>(k, -1));
+    std::vector depth(n+1, std::vector(k, INT_MIN));
+    std::vector taken(n+1, std::vector<char>(k, 0));
+    std::vector prev_rem(n+1, std::vector(k, -1));
 
     depth[0][0] = 0;
     for (int r = 1; r < k; r++) {
@@ -176,7 +176,7 @@ std::vector<std::vector<int>> get_adjacency_matrix(
     const std::vector<int>& vert_to_id
 ) {
     const int n = static_cast<int>(vert_to_id.size());
-    std::vector<std::vector<int>> adjacency_matrix(n, std::vector<int>(n, 0));
+    std::vector adjacency_matrix(n, std::vector(n, 0));
     for (const auto & [fst, snd] : graph) {
         const int u = id_to_vert.at(fst);
         const int v = id_to_vert.at(snd);
@@ -282,7 +282,7 @@ std::vector<std::vector<int>> get_connected_components(const std::vector<std::pa
     std::unordered_map<int,int> id_to_vert;
     std::vector<int> vert_to_id;
     get_vertex_occurrences(graph, id_to_vert, vert_to_id);
-    int n = static_cast<int>(vert_to_id.size());
+    const int n = static_cast<int>(vert_to_id.size());
 
     const std::vector<std::vector<int>> adjacency_list = get_adjacency_list(graph, id_to_vert, vert_to_id);
 
