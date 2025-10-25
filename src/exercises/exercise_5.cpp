@@ -284,7 +284,8 @@ std::vector<std::pair<int, std::vector<int>>> get_all_shortest_paths(
         int best = INT_MAX;
         for (int i = 0; i < n; ++i) {
             if (!used[i] && dist[i] < best) {
-                best = dist[i]; u = i;
+                best = dist[i];
+                u = i;
             }
         }
         if (u == -1) {
@@ -295,7 +296,8 @@ std::vector<std::pair<int, std::vector<int>>> get_all_shortest_paths(
             if (mat[u][v] < INT_MAX && !used[v]) {
                 const int nd = dist[u] + mat[u][v];
                 if (nd < dist[v]) {
-                    dist[v] = nd; prev[v] = u;
+                    dist[v] = nd;
+                    prev[v] = u;
                 }
             }
         }
@@ -303,7 +305,8 @@ std::vector<std::pair<int, std::vector<int>>> get_all_shortest_paths(
 
     for (int i = 0; i < n; i++) {
         if (dist[i] >= INT_MAX) {
-            result[i] = {-1, {}}; continue;
+            result[i] = {INT_MAX, {}};
+            continue;
         }
         std::vector<int> path;
         for (int cur = i; cur != -1; cur = prev[cur]) {

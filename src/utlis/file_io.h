@@ -18,5 +18,6 @@ void store_sequence_with_sum(const std::string& file_path, const std::vector<std
 void store_graph(const std::string& file_path, const std::vector<std::pair<int, int>>& sequence);
 void store_connected_components(const std::string& file_path, const std::vector<std::vector<int>>& components);
 void store_path(const std::string& file_path, int path_length, const std::vector<int>& path);
+void store_paths(const std::string& file_path, const std::vector<std::pair<int, std::vector<int>>>& paths);
 
 #endif //ENSEA_ALGO_TP2_FILE_IO_H

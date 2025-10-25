@@ -19,5 +19,6 @@
 
 #define DEFAULT_DIJ_INPUT_PATH "../data/inpdijgraph.txt"
 #define DEFAULT_DIJ_OUTPUT_PATH "../data/outdijgraph.txt"
+#define DEFAULT_DIJ_ALL_OUTPUT_PATH "../data/outdijgraph_all.txt"
 
 #endif //ENSEA_ALGO_TP2_MAGIC_NUMBERS_H

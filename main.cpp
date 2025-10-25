@@ -43,6 +43,9 @@ int main() {
             4
         );
         store_path(DEFAULT_DIJ_OUTPUT_PATH, path_length, path);
+
+        const auto all_paths = get_all_shortest_paths(graph, weights, 1);
+        store_paths(DEFAULT_DIJ_ALL_OUTPUT_PATH, all_paths);
     }
 
     return EXIT_SUCCESS;

@@ -1,0 +1,12 @@
+Shortest path from 1 to 1 has length: 0
+1
+Shortest path from 1 to 2 has length: 1
+1 -> 2
+Shortest path from 1 to 6 has length: 6
+1 -> 2 -> 3 -> 6
+Shortest path from 1 to 3 has length: 3
+1 -> 2 -> 3
+Shortest path from 1 to 4 has length: 15
+1 -> 2 -> 3 -> 6 -> 5 -> 4
+Shortest path from 1 to 5 has length: 10
+1 -> 2 -> 3 -> 6 -> 5

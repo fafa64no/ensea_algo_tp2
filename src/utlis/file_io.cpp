@@ -192,5 +192,26 @@ void store_path(const std::string& file_path, const int path_length, const std::
     file_handle.close();
 }
 
+void store_paths(const std::string& file_path, const std::vector<std::pair<int, std::vector<int>>>& paths) {
+    std::ofstream file_handle(file_path);
+
+    for (const auto& [path_length, path] : paths) {
+        const int path_start = path.front();
+        const int path_target = path.back();
+        file_handle << "Shortest path from " << path_start << " to " << path_target << " has length: " << path_length << std::endl;
+        bool first_element = true;
+        for (const auto& vertex : path) {
+            if (first_element) {
+                first_element = false;
+                file_handle << vertex;
+            } else {
+                file_handle << " -> " << vertex;
+            }
+        }
+        file_handle << std::endl;
+    }
+
+    file_handle.close();
+}
 
 
