@@ -1,5 +1,5 @@
 # Authors
-This repository is a collaborative work of Sébastien Nouira--Huet & Yaël Cavaillé-Voisin
+This repository is a collaborative work of Sébastien Nouira--Huet && Yaël Cavaillé-Voisin.
 # Algorithm
 
 This repository is used for the TP2 of the Algorithm course at ENSEA.
